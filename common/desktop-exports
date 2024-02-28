@@ -125,15 +125,19 @@ prepend_dir __EGL_VENDOR_LIBRARY_DIRS "/var/lib/snapd/lib/glvnd/egl_vendor.d"
 append_dir __EGL_VENDOR_LIBRARY_DIRS "$SNAP_DESKTOP_RUNTIME/usr/share/glvnd/egl_vendor.d"
 
 # Tell Pipewire where to find its configuration and plugins
-export PIPEWIRE_CONFIG_DIR="$SNAP_DESKTOP_RUNTIME/usr/share/pipewire"
-export PIPEWIRE_MODULE_DIR="$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/pipewire-0.3"
-export SPA_PLUGIN_DIR="$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/spa-0.2"
+if [[ -z ${PIPEWIRE_CONFIG_DIR} || -z ${PIPEWIRE_MODULE_DIR} || -z ${SPA_PLUGIN_DIR} ]]; then
+  export PIPEWIRE_CONFIG_DIR="$SNAP_DESKTOP_RUNTIME/usr/share/pipewire"
+  export PIPEWIRE_MODULE_DIR="$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/pipewire-0.3"
+  export SPA_PLUGIN_DIR="$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/spa-0.2"
+fi
 
 # Tell GStreamer where to find its plugins
-export GST_PLUGIN_PATH="$SNAP/usr/lib/$ARCH/gstreamer-1.0"
-export GST_PLUGIN_SYSTEM_PATH="$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/gstreamer-1.0"
-# gst plugin scanner doesn't install in the correct path: https://github.com/ubuntu/snapcraft-desktop-helpers/issues/43
-export GST_PLUGIN_SCANNER="$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner"
+if [[ -z ${GST_PLUGIN_SYSTEM_PATH} || -z ${GST_PLUGIN_PATH} || -z ${GST_PLUGIN_SCANNER} ]]; then
+  export GST_PLUGIN_PATH="$SNAP/usr/lib/$ARCH/gstreamer-1.0"
+  export GST_PLUGIN_SYSTEM_PATH="$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/gstreamer-1.0"
+  # gst plugin scanner doesn't install in the correct path: https://github.com/ubuntu/snapcraft-desktop-helpers/issues/43
+  export GST_PLUGIN_SCANNER="$SNAP_DESKTOP_RUNTIME/usr/lib/$ARCH/gstreamer1.0/gstreamer-1.0/gst-plugin-scanner"
+fi
 
 # XDG Config
 prepend_dir XDG_CONFIG_DIRS "$SNAP_DESKTOP_RUNTIME/etc/xdg"
